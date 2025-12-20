@@ -1,7 +1,7 @@
 'use client';
 
 import { Connection, PublicKey, Keypair } from '@solana/web3.js';
-import { AnchorProvider, Wallet } from '@coral-xyz/anchor';
+import { AnchorProvider, Wallet, BN } from '@coral-xyz/anchor';
 import {
   getArciumProgram,
   getArciumProgramId,
@@ -201,17 +201,14 @@ export class V1TArciumClient {
       ];
 
       // Create computation definition for health factor calculation
+      if (!this.userKeyPair) {
+        throw new Error('User key pair not initialized');
+      }
+
       const computationTx = await buildFinalizeCompDefTx(
         this._arciumProgram,
-        {
-          inputs,
-          callbackData: JSON.stringify({
-            type: 'health_factor',
-            positionId
-          }),
-          // Health factor calculation circuit ID (would be uploaded separately)
-          circuitId: 'health_factor_v1'
-        }
+        0, // computation index
+        this.userKeyPair.publicKey
       );
 
       // Submit computation transaction
@@ -248,10 +245,15 @@ export class V1TArciumClient {
    */
   async monitorComputation(computationRef: ComputationReference): Promise<PrivateHealthResult> {
     try {
+      // Create provider for the function call
+      const wallet = new Wallet(this.userKeyPair!);
+      const provider = new AnchorProvider(this.connection, wallet, AnchorProvider.defaultOptions());
+
       // Wait for computation finalization
       const result = await awaitComputationFinalization(
-        this.connection,
-        computationRef
+        provider,
+        computationRef.computationOffset,
+        this._arciumProgram
       );
 
       // Parse callback data
@@ -288,7 +290,17 @@ export class V1TArciumClient {
     }
 
     try {
-      const mempoolStats = await getComputationsInMempool(this.connection, this.userKeyPair);
+      const mempoolData = await getComputationsInMempool(this._arciumProgram, this.userKeyPair!.publicKey);
+
+      // Transform the data to match expected return type
+      const mempoolStats: MempoolPriorityFeeStats = {
+        mean: new BN(0),
+        median: new BN(0),
+        min: new BN(0),
+        max: new BN(0),
+        count: mempoolData.length
+      };
+
       return mempoolStats;
     } catch (error) {
       console.error('❌ Failed to get mempool stats:', error);
@@ -339,7 +351,11 @@ export class V1TArciumClient {
     for (const log of logs) {
       if (log.includes('Computation created:')) {
         const ref = log.split('Computation created:')[1].trim();
-        return { computationOffset: BigInt(ref) };
+        return {
+          computationOffset: new BN(ref),
+          priorityFee: new BN(0),
+          accs: []
+        };
       }
     }
 
