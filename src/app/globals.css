@@ -3,34 +3,34 @@
 /* V1ta Protocol - Dark Forest Theme */
 
 :root {
-  /* Background - Dark, scary forest depths */
+  /* Background - Dark, scary forest depths with enhanced contrast */
   --base: #050f05; /* Even darker - almost pure black with subtle green */
-  --surface: #0a1824; /* Chinese Black - card surfaces */
-  --elevated: #0f2a38; /* Yankees Blue - elevated elements */
-  --border: #1d3c43; /* Japanese Indigo - borders */
+  --surface: #0a1f14; /* Darker surface with green tint */
+  --elevated: #0f2a18; /* Darker elevated elements */
+  --border: #1a3c2a; /* Darker border with better contrast */
 
   /* Grey options for subtle variations */
   --grey-darkest: #092409; /* Chinese Black (green-tinted) */
   --grey-dark: #132f13; /* Phthalo Green */
-  --grey-medium: #1d3c43; /* Japanese Indigo */
+  --grey-medium: #1d3c2a; /* Darker medium grey */
   --grey-light: #2a4930; /* Kombu Green */
 
-  /* Accent - Dark mystical green */
-  --primary: #2a4930; /* Kombu Green - main accent */
-  --primary-hover: #3a5940; /* Slightly lighter */
-  --primary-muted: #2a493020;
+  /* Accent - Dark mystical green with enhanced visibility */
+  --primary: #3a5940; /* Brighter Kombu Green - main accent */
+  --primary-hover: #4a6940; /* Even lighter for hover state */
+  --primary-muted: #3a594020;
 
-  /* Text - Muted contrast for scary atmosphere */
-  --text-primary: #c8d3d5;
-  --text-secondary: #8a9a9d;
-  --text-tertiary: #5a6a6d;
-  --text-disabled: #3a4a4d;
+  /* Text - Enhanced contrast for better visibility while maintaining dark atmosphere */
+  --text-primary: #e8f3f5; /* Lighter, better contrast */
+  --text-secondary: #a8babd; /* Increased brightness for better readability */
+  --text-tertiary: #788a8d; /* Enhanced contrast while staying muted */
+  --text-disabled: #4a5a5d; /* Slightly brighter for accessibility */
 
-  /* System Colors - Darker, more muted */
-  --success: #2a4930; /* Kombu Green */
-  --warning: #4a3920;
-  --error: #4a2020;
-  --info: #1d3c43; /* Japanese Indigo */
+  /* System Colors - Enhanced contrast while maintaining dark aesthetic */
+  --success: #4a6940; /* Brighter success green */
+  --warning: #5a4930; /* Brighter warning amber */
+  --error: #5a3030; /* Brighter error red */
+  --info: #2a4930; /* Brighter info blue */
 
   /* Design System */
   --radius: 20px;
@@ -296,4 +296,61 @@ select {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* Enhanced text contrast utilities */
+.text-high-contrast {
+  color: #f0f5f6 !important; /* Very high contrast text */
+}
+
+.text-medium-contrast {
+  color: #b8c8ca !important; /* Medium-high contrast */
+}
+
+.text-low-contrast {
+  color: #88989a !important; /* Better low contrast */
+}
+
+/* Ensure text remains readable on all backgrounds */
+@supports (backdrop-filter: blur()) {
+  .glass-text {
+    background: rgba(5, 15, 5, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+}
+
+/* Dark mode specific text enhancements */
+@media (prefers-color-scheme: dark) {
+  .text-adaptive {
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Ensure button text is always readable */
+  button {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Improve focus visibility for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Enhanced link visibility */
+a:not([class]) {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: all var(--transition);
+}
+
+a:not([class]):hover {
+  color: var(--primary-hover);
+  text-decoration-color: var(--primary-hover);
 }
