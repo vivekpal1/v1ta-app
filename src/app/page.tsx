@@ -5,16 +5,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { AppLayout } from '@/components/layout';
 import { HeroSection } from '@/components/home/hero-section';
 import { MysticalBranches } from '@/components/home/mystical-branches';
-import { PrivacyEasterEggs } from '@/components/home/privacy-easter-eggs';
-import { DarkModeAnnouncementModal } from '@/components/home/dark-mode-announcement-modal';
 import { BorrowInterface } from '@/components/borrow/borrow-interface';
 
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const borrowSectionRef = useRef<HTMLDivElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [showDarkModeModal, setShowDarkModeModal] = useState(false);
-
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -75,25 +72,12 @@ export default function HomePage() {
     }
   }, []);
 
-  // Show dark mode announcement modal on page load (with delay)
-  useEffect(() => {
-    const hasSeenModal = localStorage.getItem('darkModeAnnouncementDismissed');
-    if (!hasSeenModal) {
-      const timer = setTimeout(() => {
-        setShowDarkModeModal(true);
-      }, 2000); // Show after 2 seconds
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
+  
   return (
     <AppLayout>
       <div ref={containerRef} className="relative">
         {/* Mystical Branches Background */}
         <MysticalBranches />
-
-        {/* Privacy Easter Eggs - Subtle hints throughout the page */}
-        <PrivacyEasterEggs />
 
         {/* Hero Section */}
         <div className="relative z-10">
@@ -230,12 +214,7 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* Dark Mode Announcement Modal */}
-        <DarkModeAnnouncementModal
-          open={showDarkModeModal}
-          onOpenChange={setShowDarkModeModal}
-        />
-      </div>
+              </div>
     </AppLayout>
   );
 }
